@@ -3,13 +3,16 @@
 /**
  * Module dependencies.
  */
+import 'dotenv/config';
 
 import app from '../app';
 import debugModule from 'debug';
 import http from 'http';
 
-debugModule.enable('staycation-be:server');
-const debug = debugModule('staycation-be:server');
+const namespace = 'staycation-be:server';
+
+debugModule.enable(namespace);
+const debug = debugModule(namespace);
 
 /**
  * Get port from environment and store in Express.

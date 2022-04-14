@@ -1,0 +1,73 @@
+@scope_css
+<link
+  rel="stylesheet"
+  href="/public/vendor/datatables.net-bs4/css/dataTables.bootstrap4.min.css"
+/>
+
+<style>
+  .table.dataTable {
+    margin-top: 0px !important;
+  }
+  div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    margin: 6px;
+  }
+  div.dataTables_wrapper div.dataTables_filter {
+    position: absolute;
+    top: -40px;
+    right: 28px;
+  }
+</style>
+@endscope_css
+
+<div class="card">
+  <div class="card-header d-flex align-items-center">
+    <h3 class="card-title"><%- contentTitle %></h3>
+    <button type="button" class="ml-2 btn bg-gradient-primary btn-xs">
+      <i class="fas fa-plus"></i>
+      New Data
+    </button>
+
+    <div class="card-tools"></div>
+  </div>
+  <div class="card-body p-0">
+    <table id="table" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Rendering engine</th>
+          <th>Browser</th>
+          <th>Platform(s)</th>
+          <th>Engine version</th>
+          <th>CSS grade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Trident</td>
+          <td>Internet Explorer 4.0</td>
+          <td>Win 95+</td>
+          <td>4</td>
+          <td>X</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- /.card-body -->
+  <!-- <div class="card-footer"></div> -->
+  <!-- /.card-footer-->
+</div>
+
+@scope_js
+<script src="/public/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/public/vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#table").DataTable({
+      paging: true,
+      lengthChange: false,
+      searching: true,
+      ordering: true,
+      info: false,
+    });
+  });
+</script>
+@endscope_js
