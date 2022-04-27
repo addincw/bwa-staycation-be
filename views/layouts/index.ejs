@@ -27,7 +27,7 @@
     <!-- Site wrapper -->
     <div class="wrapper">
       <!-- Navbar -->
-      <%- include('./navbar.ejs') %>
+      <%- include('./_navbar.ejs') %>
       <!-- /.navbar -->
 
       <!-- Main Sidebar Container -->
@@ -44,7 +44,7 @@
         </a>
 
         <!-- Sidebar -->
-        <%- include('./sidebar.ejs') %>
+        <%- include('./_sidebar.ejs') %>
         <!-- /.sidebar -->
       </aside>
 
@@ -69,6 +69,8 @@
       </div>
       <!-- /.content-wrapper -->
 
+      <%- include('./_modal.ejs') %>
+
       <footer class="main-footer">
         <div class="float-right d-none d-sm-block"><b>Version</b> 3.2.0</div>
         <strong
@@ -77,12 +79,6 @@
         >
         All rights reserved.
       </footer>
-
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-      </aside>
-      <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
 
@@ -92,6 +88,8 @@
     <script src="/public/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="/public/vendor/admin-lte/dist/js/adminlte.min.js"></script>
+
+    <script src="/javascripts/staycation.js"></script>
 
     <%- additionalJS %>
   </body>

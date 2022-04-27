@@ -1,0 +1,13 @@
+<script src="/public/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/public/vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#table").DataTable({
+      paging: true,
+      lengthChange: false,
+      searching: true,
+      ordering: true,
+      info: false,
+    });
+  });
+</script>

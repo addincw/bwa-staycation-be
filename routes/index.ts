@@ -1,7 +1,7 @@
 import express from "express";
 
 import bankRoutes from "./bank";
-import categoryRoutes from "./category";
+import categoryRoutes from "./CategoryRoute";
 import placeRoutes from "./place";
 import userRoutes from "./users";
 

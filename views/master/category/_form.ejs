@@ -1,0 +1,54 @@
+<% 
+const checkedActive = fields?.is_active ? 'checked' : ''; 
+const checkedHighlight = fields?.is_highlight ? 'checked' : ''; 
+%>
+<form id="customer-form" method="post" action="<%= action || '' %>">
+  <input type="hidden" name="id" value="<%= fields?._id %>">
+  <div class="form-group">
+    <label for="name">Category Name</label>
+    <input
+      type="text"
+      class="form-control <%= errors?.name?.class %>"
+      id="name"
+      name="name"
+      value="<%= fields.name %>"
+      placeholder="Enter Category Name"
+      required
+    />
+    <% if (errors?.name?.message) { %>
+    <span id="name-error" class="error invalid-feedback">
+      <%= errors?.name?.message %>
+    </span>
+    <% } %>
+  </div>
+  <div class="form-group">
+    <div class="custom-control custom-switch">
+      <input
+        type="checkbox"
+        class="custom-control-input"
+        id="is_active"
+        name="is_active"
+        value="true"
+        <%= checkedActive %>
+      />
+      <label class="custom-control-label" for="is_active">
+        Toggle this to set category active
+      </label>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="custom-control custom-switch">
+      <input
+        type="checkbox"
+        class="custom-control-input"
+        id="is_highlight"
+        name="is_highlight"
+        value="true"
+        <%= checkedHighlight %>
+      />
+      <label class="custom-control-label" for="is_highlight">
+        Toggle this to set category highlight on landing page
+      </label>
+    </div>
+  </div>
+</form>

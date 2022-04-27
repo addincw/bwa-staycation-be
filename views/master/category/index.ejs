@@ -1,28 +1,13 @@
-@scope_css
-<link
-  rel="stylesheet"
-  href="/public/vendor/datatables.net-bs4/css/dataTables.bootstrap4.min.css"
-/>
-
-<style>
-  .table.dataTable {
-    margin-top: 0px !important;
-  }
-  div.dataTables_wrapper div.dataTables_paginate ul.pagination {
-    margin: 6px;
-  }
-  div.dataTables_wrapper div.dataTables_filter {
-    position: absolute;
-    top: -40px;
-    right: 28px;
-  }
-</style>
-@endscope_css
-
 <div class="card">
   <div class="card-header d-flex align-items-center">
-    <h3 class="card-title"><%- contentTitle %></h3>
-    <button type="button" class="ml-2 btn bg-gradient-primary btn-xs">
+    <button
+      type="button"
+      class="btn bg-gradient-primary btn-sm"
+      data-toggle="modal"
+      data-target="#sc-modal"
+      data-content-type="form"
+      data-content-source="/master/category/_form"
+    >
       <i class="fas fa-plus"></i>
       New Data
     </button>
@@ -33,21 +18,56 @@
     <table id="table" class="table table-striped">
       <thead>
         <tr>
-          <th>Rendering engine</th>
-          <th>Browser</th>
-          <th>Platform(s)</th>
-          <th>Engine version</th>
-          <th>CSS grade</th>
+          <th>Name</th>
+          <th>Is Highlight</th>
+          <th>Is Active</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
+        <% for(let category of categories) { %>
         <tr>
-          <td>Trident</td>
-          <td>Internet Explorer 4.0</td>
-          <td>Win 95+</td>
-          <td>4</td>
-          <td>X</td>
+          <td>
+            <strong><%= category.name %></strong>
+            </br>
+            <%= category.slug %>
+          </td>
+          <td>
+            <% if(category.is_highlight) { %>
+            <span class="right badge badge-success">highlight</span>
+            <% } %>
+          </td>
+          <td>
+            <% if(category.is_active) { %>
+            <span class="right badge badge-success">active</span>
+            <% } else { %>
+            <span class="right badge badge-danger">not active</span>
+            <% } %>
+          </td>
+          <td>
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              data-toggle="modal"
+              data-target="#sc-modal"
+              data-content-type="form"
+              data-content-source="/master/category/_form/<%= category.id %>"
+            >
+              <i class="fa fa-pen"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-danger btn-sm"
+              data-toggle="modal"
+              data-target="#sc-modal"
+              data-content-type="confirmation-delete"
+              data-content-target="/master/category/<%= category.id %>?_method=DELETE"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
         </tr>
+        <% } %>
       </tbody>
     </table>
   </div>
@@ -55,19 +75,3 @@
   <!-- <div class="card-footer"></div> -->
   <!-- /.card-footer-->
 </div>
-
-@scope_js
-<script src="/public/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/public/vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script>
-  $(document).ready(function () {
-    $("#table").DataTable({
-      paging: true,
-      lengthChange: false,
-      searching: true,
-      ordering: true,
-      info: false,
-    });
-  });
-</script>
-@endscope_js

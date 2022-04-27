@@ -8,9 +8,13 @@ const baseBreadcrumbs = [
 ];
 
 export const index = (req: Request, res: Response) => {
-  view(res, baseViewPath + "/index", {
-    breadcrumbs: baseBreadcrumbs,
-    pageTitle: "Master Bank",
-    contentTitle: "Master Bank Table",
+  view({
+    response: res,
+    path: baseViewPath + "/index",
+    props: {
+      breadcrumbs: baseBreadcrumbs,
+      pageTitle: "Master Bank",
+      contentTitle: "Master Bank Table",
+    },
   });
 };
