@@ -26,7 +26,7 @@ interface viewContentParsed {
   [otherProps: string]: any;
 }
 
-const renderedBreadcrumbs = (breadcrumbs: Array<breadcrumb>): string => {
+const _renderedBreadcrumbs = (breadcrumbs: Array<breadcrumb>): string => {
   const mappedBreadcrumbs = breadcrumbs.map((breadcrumb: breadcrumb) => {
     const cssClasses = ["breadcrumb-item"];
     if (breadcrumb.active) cssClasses.push("active");
@@ -50,7 +50,7 @@ const renderedBreadcrumbs = (breadcrumbs: Array<breadcrumb>): string => {
     </ol>
   `;
 };
-export const parseViewContent = (
+const _parseViewContent = (
   content: string,
   autoloadCssJs?: string
 ): viewContentParsed => {
@@ -95,6 +95,25 @@ export const parseViewContent = (
 
   return resultGroups;
 };
+export const bind = (req: Request, res: Response) => {
+  const instance = {
+    autoloadCssJs: "",
+    addCssJs: (file: string) => {
+      return { ...instance, autoloadCssJs: file };
+    },
+    view: function (path: string, props: any) {
+      view({
+        request: req,
+        response: res,
+        path,
+        props,
+        autoloadCssJs: this.autoloadCssJs,
+      });
+    },
+  };
+
+  return instance;
+};
 export const view = async ({
   request,
   response,
@@ -103,9 +122,9 @@ export const view = async ({
   autoloadCssJs,
 }: viewParams) => {
   const content = await ejs.renderFile("views/" + path + ".ejs", { ...props });
-  const parsedContent = parseViewContent(content, autoloadCssJs);
+  const parsedContent = _parseViewContent(content, autoloadCssJs);
 
-  const breadcrumbs = renderedBreadcrumbs(props?.breadcrumbs || []);
+  const breadcrumbs = _renderedBreadcrumbs(props?.breadcrumbs || []);
   const pageTitle = props?.pageTitle || "";
   const notification = getNotification(request);
   const scModalCall = getFlash(request, "scModal:call");
@@ -117,4 +136,9 @@ export const view = async ({
     scModalCall,
     ...parsedContent,
   });
+};
+export const viewStringify = async (path: string, props?: any) => {
+  const view: string = await ejs.renderFile(path, props);
+  const { content } = _parseViewContent(view);
+  return content;
 };

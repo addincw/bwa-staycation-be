@@ -7,7 +7,8 @@ import methodOverride from "method-override";
 import session from "express-session";
 import flash from "connect-flash";
 
-import { dbConnect } from "./database/connection";
+import { dbConnect } from "./config/database";
+import { sessionOpts } from "./config/session";
 import routes from "./routes";
 
 const app = express();
@@ -21,14 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 app.use(cookieParser());
-app.use(
-  session({
-    resave: false,
-    saveUninitialized: true,
-    secret: "scsession",
-    cookie: { maxAge: 60000 },
-  })
-);
+app.use(session(sessionOpts));
 app.use(flash());
 
 app.use(dbConnect());
@@ -36,7 +30,7 @@ app.use(dbConnect());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/public/vendor", express.static(path.join(__dirname, "node_modules")));
 
-routes(app);
+app.use(routes());
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

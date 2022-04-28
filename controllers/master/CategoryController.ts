@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import ejs from "ejs";
 
-import { parseViewContent, view } from "../../utils/template";
+import * as template from "../../utils/template";
 import { getErrorFields, setErrorField } from "../../utils/form";
 import { toSlug } from "../../utils/string";
 
@@ -32,16 +32,11 @@ const _validate = (params: any) => {
 export const index = async (req: Request, res: Response) => {
   const categories = await Category.find();
 
-  view({
-    request: req,
-    response: res,
-    path: baseViewPath + "/index",
-    props: {
-      breadcrumbs: baseBreadcrumbs,
-      pageTitle: "Master Category",
-      categories,
-    },
-    autoloadCssJs: "datatable",
+  const render = template.bind(req, res).addCssJs("datatable");
+  render.view(baseViewPath + "/index", {
+    breadcrumbs: baseBreadcrumbs,
+    pageTitle: "Master Category",
+    categories,
   });
 };
 export const showFormCreate = async (req: Request, res: Response) => {
@@ -53,19 +48,15 @@ export const showFormCreate = async (req: Request, res: Response) => {
   const fields = olds ? olds : category.toObject();
   const errors = errs ? errs : getErrorFields(fields);
 
-  const view = await ejs.renderFile("views/" + baseViewPath + "/_form.ejs", {
-    action: baseRoutePath,
-    fields,
-    errors,
-  });
-  const parsedView = parseViewContent(view);
-
-  res.status(200).json({
-    title: "New Category",
-    body: parsedView.content,
-    additionalCSS: parsedView.additionalCSS,
-    additionalJS: parsedView.additionalJS,
-  });
+  const body = await template.viewStringify(
+    "views/" + baseViewPath + "/_form.ejs",
+    {
+      action: baseRoutePath,
+      fields,
+      errors,
+    }
+  );
+  res.status(200).json({ title: "New Category", body });
 };
 export const store = async (req: Request, res: Response) => {
   const params = req.body;
@@ -73,8 +64,6 @@ export const store = async (req: Request, res: Response) => {
 
   // validate
   if (Object.keys(errors).length) {
-    setNotification(req, { body: "Failed store new category" }, "danger");
-
     const scModal = JSON.stringify({
       type: "form",
       source: baseRoutePath + "/_form",
@@ -119,19 +108,15 @@ export const showFormEdit = async (req: Request, res: Response) => {
   const fields = olds ? olds : category.toObject();
   const errors = errs ? errs : getErrorFields(fields);
 
-  const view = await ejs.renderFile("views/" + baseViewPath + "/_form.ejs", {
-    action: baseRoutePath + "?_method=PUT",
-    fields,
-    errors,
-  });
-  const parsedView = parseViewContent(view);
-
-  res.status(200).json({
-    title: "Edit Category",
-    body: parsedView.content,
-    additionalCSS: parsedView.additionalCSS,
-    additionalJS: parsedView.additionalJS,
-  });
+  const body = await template.viewStringify(
+    "views/" + baseViewPath + "/_form.ejs",
+    {
+      action: baseRoutePath + "?_method=PUT",
+      fields,
+      errors,
+    }
+  );
+  res.status(200).json({ title: "Edit Category", body });
 };
 export const update = async (req: Request, res: Response) => {
   const params = req.body;
@@ -139,8 +124,6 @@ export const update = async (req: Request, res: Response) => {
 
   // validate
   if (Object.keys(errors).length) {
-    setNotification(req, { body: "Failed update category" }, "danger");
-
     const scModal = JSON.stringify({
       type: "form",
       source: baseRoutePath + "/_form/" + fields.id,
