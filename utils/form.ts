@@ -17,7 +17,7 @@ export const getErrorFields = (params: any) => {
   return fields;
 };
 export const setErrorField = (field: Field, errMessage: String) => {
-  const message = field.message
+  const message = field?.message
     ? field.message + ", " + errMessage
     : errMessage;
 

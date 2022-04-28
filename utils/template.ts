@@ -1,5 +1,6 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import ejs from "ejs";
+import { getFlash } from "./flash";
 
 interface breadcrumb {
   name: string;
@@ -7,6 +8,7 @@ interface breadcrumb {
   active: boolean;
 }
 interface viewParams {
+  request?: Request;
   response: Response;
   path: string;
   props?: viewProps;
@@ -94,6 +96,7 @@ export const parseViewContent = (
   return resultGroups;
 };
 export const view = async ({
+  request,
   response,
   path,
   props,
@@ -104,10 +107,14 @@ export const view = async ({
 
   const breadcrumbs = renderedBreadcrumbs(props?.breadcrumbs || []);
   const pageTitle = props?.pageTitle || "";
+  const notification = getFlash(request);
+
+  console.log(notification);
 
   response.render("layouts/index", {
     breadcrumbs,
     pageTitle,
+    notification,
     ...parsedContent,
   });
 };

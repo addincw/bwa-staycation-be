@@ -6,6 +6,7 @@ import { getErrorFields, setErrorField } from "../../utils/form";
 import { toSlug } from "../../utils/string";
 
 import Category from "../../models/master/Category";
+import { setFlash } from "../../utils/flash";
 
 const baseRoutePath = "/master/category";
 const baseViewPath = "master/category";
@@ -32,6 +33,7 @@ export const index = async (req: Request, res: Response) => {
   const categories = await Category.find();
 
   view({
+    request: req,
     response: res,
     path: baseViewPath + "/index",
     props: {
@@ -68,6 +70,7 @@ export const store = async (req: Request, res: Response) => {
 
   // validate
   if (Object.keys(errors).length) {
+    setFlash(req, { body: "Failed store new category" }, "danger");
     res.redirect(baseRoutePath);
     return;
   }
@@ -87,7 +90,10 @@ export const store = async (req: Request, res: Response) => {
 
   try {
     await category.save();
-  } catch (error) {}
+    setFlash(req, { body: "Success store new category" });
+  } catch (error) {
+    setFlash(req, { body: "Failed store new category" }, "danger");
+  }
 
   // handle success
   res.redirect(baseRoutePath);
@@ -117,6 +123,7 @@ export const update = async (req: Request, res: Response) => {
 
   // validate
   if (Object.keys(errors).length) {
+    setFlash(req, { body: "Failed update category" }, "danger");
     res.redirect(baseRoutePath);
     return;
   }
@@ -137,7 +144,10 @@ export const update = async (req: Request, res: Response) => {
         is_highlight,
       }
     );
-  } catch (error) {}
+    setFlash(req, { body: "Success update category" });
+  } catch (error) {
+    setFlash(req, { body: "Failed update category" }, "danger");
+  }
 
   // handle success
   res.redirect(baseRoutePath);
@@ -145,7 +155,10 @@ export const update = async (req: Request, res: Response) => {
 export const destroy = async (req: Request, res: Response) => {
   try {
     await Category.findByIdAndDelete(req.params.id);
-  } catch (error) {}
+    setFlash(req, { body: "Success delete category" });
+  } catch (error) {
+    setFlash(req, { body: "Failed delete category" }, "danger");
+  }
 
   // handle success
   res.redirect(baseRoutePath);

@@ -91,6 +91,12 @@
 
     <script src="/javascripts/staycation.js"></script>
 
+    <script>
+      <% if(notification?.body) { %>
+      $(document).Toasts('create', <%- JSON.stringify(notification) %>);
+      <% } %>
+    </script>
+
     <%- additionalJS %>
   </body>
 </html>
