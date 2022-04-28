@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import ejs from "ejs";
-import { getFlash } from "./flash";
+import { getFlash, getNotification } from "./flash";
 
 interface breadcrumb {
   name: string;
@@ -8,7 +8,7 @@ interface breadcrumb {
   active: boolean;
 }
 interface viewParams {
-  request?: Request;
+  request: Request;
   response: Response;
   path: string;
   props?: viewProps;
@@ -107,14 +107,14 @@ export const view = async ({
 
   const breadcrumbs = renderedBreadcrumbs(props?.breadcrumbs || []);
   const pageTitle = props?.pageTitle || "";
-  const notification = getFlash(request);
-
-  console.log(notification);
+  const notification = getNotification(request);
+  const scModalCall = getFlash(request, "scModal:call");
 
   response.render("layouts/index", {
     breadcrumbs,
     pageTitle,
     notification,
+    scModalCall,
     ...parsedContent,
   });
 };

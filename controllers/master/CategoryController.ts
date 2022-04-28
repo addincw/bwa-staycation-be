@@ -6,7 +6,7 @@ import { getErrorFields, setErrorField } from "../../utils/form";
 import { toSlug } from "../../utils/string";
 
 import Category from "../../models/master/Category";
-import { setFlash } from "../../utils/flash";
+import { getFlash, setFlash, setNotification } from "../../utils/flash";
 
 const baseRoutePath = "/master/category";
 const baseViewPath = "master/category";
@@ -46,8 +46,12 @@ export const index = async (req: Request, res: Response) => {
 };
 export const showFormCreate = async (req: Request, res: Response) => {
   const category = new Category();
-  const fields = category.toObject();
-  const errors = getErrorFields(fields);
+
+  const olds = getFlash(req, "olds");
+  const errs = getFlash(req, "errors");
+
+  const fields = olds ? olds : category.toObject();
+  const errors = errs ? errs : getErrorFields(fields);
 
   const view = await ejs.renderFile("views/" + baseViewPath + "/_form.ejs", {
     action: baseRoutePath,
@@ -63,14 +67,22 @@ export const showFormCreate = async (req: Request, res: Response) => {
     additionalJS: parsedView.additionalJS,
   });
 };
-// TODO: handle old value if validation error
 export const store = async (req: Request, res: Response) => {
   const params = req.body;
   const { errors, fields } = _validate(params);
 
   // validate
   if (Object.keys(errors).length) {
-    setFlash(req, { body: "Failed store new category" }, "danger");
+    setNotification(req, { body: "Failed store new category" }, "danger");
+
+    const scModal = JSON.stringify({
+      type: "form",
+      source: baseRoutePath + "/_form",
+    });
+    setFlash(req, "scModal:call", scModal);
+    setFlash(req, "olds", JSON.stringify(fields));
+    setFlash(req, "errors", JSON.stringify(errors));
+
     res.redirect(baseRoutePath);
     return;
   }
@@ -90,9 +102,9 @@ export const store = async (req: Request, res: Response) => {
 
   try {
     await category.save();
-    setFlash(req, { body: "Success store new category" });
+    setNotification(req, { body: "Success store new category" });
   } catch (error) {
-    setFlash(req, { body: "Failed store new category" }, "danger");
+    setNotification(req, { body: "Failed store new category" }, "danger");
   }
 
   // handle success
@@ -100,8 +112,12 @@ export const store = async (req: Request, res: Response) => {
 };
 export const showFormEdit = async (req: Request, res: Response) => {
   const category = await Category.findById(req.params.id);
-  const fields = category.toObject();
-  const errors = getErrorFields(fields);
+
+  const olds = getFlash(req, "olds");
+  const errs = getFlash(req, "errors");
+
+  const fields = olds ? olds : category.toObject();
+  const errors = errs ? errs : getErrorFields(fields);
 
   const view = await ejs.renderFile("views/" + baseViewPath + "/_form.ejs", {
     action: baseRoutePath + "?_method=PUT",
@@ -123,7 +139,16 @@ export const update = async (req: Request, res: Response) => {
 
   // validate
   if (Object.keys(errors).length) {
-    setFlash(req, { body: "Failed update category" }, "danger");
+    setNotification(req, { body: "Failed update category" }, "danger");
+
+    const scModal = JSON.stringify({
+      type: "form",
+      source: baseRoutePath + "/_form/" + fields.id,
+    });
+    setFlash(req, "scModal:call", scModal);
+    setFlash(req, "olds", JSON.stringify(fields));
+    setFlash(req, "errors", JSON.stringify(errors));
+
     res.redirect(baseRoutePath);
     return;
   }
@@ -144,9 +169,9 @@ export const update = async (req: Request, res: Response) => {
         is_highlight,
       }
     );
-    setFlash(req, { body: "Success update category" });
+    setNotification(req, { body: "Success update category" });
   } catch (error) {
-    setFlash(req, { body: "Failed update category" }, "danger");
+    setNotification(req, { body: "Failed update category" }, "danger");
   }
 
   // handle success
@@ -155,9 +180,9 @@ export const update = async (req: Request, res: Response) => {
 export const destroy = async (req: Request, res: Response) => {
   try {
     await Category.findByIdAndDelete(req.params.id);
-    setFlash(req, { body: "Success delete category" });
+    setNotification(req, { body: "Success delete category" });
   } catch (error) {
-    setFlash(req, { body: "Failed delete category" }, "danger");
+    setNotification(req, { body: "Failed delete category" }, "danger");
   }
 
   // handle success

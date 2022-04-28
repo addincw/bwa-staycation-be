@@ -9,6 +9,7 @@ const baseBreadcrumbs = [
 
 export const index = (req: Request, res: Response) => {
   view({
+    request: req,
     response: res,
     path: baseViewPath + "/index",
     props: {

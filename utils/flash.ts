@@ -1,14 +1,14 @@
 import { Request } from "express";
 
 interface Notification {
-  title?: String;
-  body: String;
-  class?: String;
+  title?: string;
+  body: string;
+  class?: string;
 }
-export const setFlash = (
+export const setNotification = (
   req: Request,
   message: Notification,
-  type?: String
+  type?: string
 ) => {
   const notification = { ...message };
 
@@ -25,9 +25,21 @@ export const setFlash = (
   }
   req.flash("notification", JSON.stringify(notification));
 };
-export const getFlash = (req?: Request) => {
+export const getNotification = (req?: Request) => {
   if (!req) return {};
 
   const [notification = "{}"] = req.flash("notification");
   return JSON.parse(notification);
+};
+export const setFlash = (req: Request, key: string, value: any) => {
+  const val = typeof value === "object" ? JSON.stringify(value) : value;
+  req.flash(key, val);
+};
+export const getFlash = (req: Request, key: string) => {
+  const [result = ""] = req.flash(key);
+  try {
+    return JSON.parse(result);
+  } catch (error) {
+    return result;
+  }
 };

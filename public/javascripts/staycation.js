@@ -41,6 +41,18 @@ const scModalHandler = async (evt) => {
     _setFormSubmit(elBody, elButtonSubmit);
   }
 };
+const scModalTriggerClick = (element, data) => {
+  element.style.display = "none";
+
+  element.setAttribute("data-toggle", "modal");
+  element.setAttribute("data-target", "#sc-modal");
+  element.setAttribute("data-content-type", data.type);
+  element.setAttribute("data-content-source", data.source);
+  element.addEventListener('click', scModalHandler);
+
+  document.body.append(element);
+  element.click();
+};
 
 const _setFormSubmit = (element, button) => {
   const form = element.getElementsByTagName('form')[0];

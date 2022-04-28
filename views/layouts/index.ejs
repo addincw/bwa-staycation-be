@@ -95,6 +95,13 @@
       <% if(notification?.body) { %>
       $(document).Toasts('create', <%- JSON.stringify(notification) %>);
       <% } %>
+
+      <% if(scModalCall) { %>
+      const scModalCall = <%- JSON.stringify(scModalCall) %>;
+      const virtualScModalButton = document.createElement("button");
+
+      scModalTriggerClick(virtualScModalButton, scModalCall);
+      <% } %>
     </script>
 
     <%- additionalJS %>
